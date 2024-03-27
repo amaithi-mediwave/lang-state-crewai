@@ -1,0 +1,14 @@
+.venv
+.env
+Supervisor.ipynb
+plan-and-execute.ipynb
+langgraph.ipynb
+__pycache__
+LLMCompiler/__pycache__
+nodes/__pycache__
+grp_food_crew_ai/__pycache__
+grp_Gen_Conv/__pycache__
+grp_others/__pycache__
+grp_RAG1/__pycache__
+grp_travel_crew_ai/__pycache__
+super_graph_supervisor/__pycache__

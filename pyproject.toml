@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "langgraph-multi-agent-ollama"
+version = "0.1.0"
+description = ""
+authors = ["amaithi-mediwave <amaithi_chirasan@mindwaveventures.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11"
+langchain = "^0.1.13"
+langgraph = "^0.0.30"
+requests = "^2.31.0"
+python-dotenv = "1.0.0"
+crewai = "^0.22.5"
+weaviate-client = "3.26.0"
+redis = "^5.0.3"
+langchain-experimental = "^0.0.55"
+wikipedia = "^1.4.0"
+langchainhub = "^0.1.15"
+openapi-pydantic = "^0.4.0"
+pyowm = "^3.3.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
