@@ -58,7 +58,7 @@ def food_crew(input):
         ],
         # function_calling_llm=function_llm,
         # full_output=True,
-        verbose=2,
+        verbose=1,
         process=Process.hierarchical,
         # manager_callbacks=manager_agent,
         manager_llm=llm
@@ -66,4 +66,4 @@ def food_crew(input):
 
     result = crew.kickoff()
     print(result)
-    return result
+    return {"messages": [result]}

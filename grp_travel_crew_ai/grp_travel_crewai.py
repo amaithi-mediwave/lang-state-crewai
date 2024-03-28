@@ -9,17 +9,22 @@ import os
 from crewai import Task
 from textwrap import dedent
 from langchain_community.llms.ollama import Ollama
+from langchain_community.chat_models.ollama import ChatOllama
+from langchain_core.messages import AIMessage
 
 from .grp_travel_agents import TravelAgents
 from .grp_travel_task import TravelTask
 
 
-def travel_crew(input):
+def travel_crew(state):
+    
+    input = state['messages'][0].content
+    
     
     travel_agents = TravelAgents()
     travel_tasks = TravelTask()
     
-    llm = Ollama(model=os.environ['LLM'])
+    llm = ChatOllama(model=os.environ['LLM'])
     
     expert_travel_agent = travel_agents.expert_travel_agent()
     city_selection_agent = travel_agents.city_selection_expert()
@@ -44,15 +49,15 @@ def travel_crew(input):
         tasks=[
             travel_task_
         ],
-        verbose=1,
+        verbose=0,
         process=Process.hierarchical,
         # manager_callbacks=travel_manager,
         manager_llm=llm
     )
     
     result = crew.kickoff()
-    return result
-
+    print(result, end='\n\n')
+    return {"messages": [AIMessage(content=result)], 'next': 'supervisor'}
 
 
 
