@@ -1,8 +1,7 @@
 from langchain.tools.retriever import create_retriever_tool
 from langchain_community.vectorstores import Weaviate
 import weaviate
-from dotenv import load_dotenv
-load_dotenv()
+
 
 import os
 

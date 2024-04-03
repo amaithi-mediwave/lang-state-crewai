@@ -1,16 +1,10 @@
 from crewai import Crew
 from textwrap import dedent
-# from agents import TravelAgents
 from crewai.process import Process
-from dotenv import load_dotenv
-load_dotenv()
+from langchain_community.chat_models.ollama import ChatOllama
+from langchain_core.agents import AgentFinish
 import os
 
-from crewai import Task
-from textwrap import dedent
-from langchain_community.llms.ollama import Ollama
-from langchain_community.chat_models.ollama import ChatOllama
-from langchain_core.messages import AIMessage
 
 from .grp_travel_agents import TravelAgents
 from .grp_travel_task import TravelTask
@@ -56,9 +50,17 @@ def travel_crew(state):
     )
     
     result = crew.kickoff()
-    print(result, end='\n\n')
-    return {"messages": [AIMessage(content=result)], 'next': 'supervisor'}
+    # print(result, end='\n\n')
+    # return {"messages": [AIMessage(content=result)], 'next': 'supervisor'}
 
+    return {
+        "agent_outcome": AgentFinish(
+            return_values={
+                'output': result
+                }, 
+            log=result
+            )
+        }
 
 
 

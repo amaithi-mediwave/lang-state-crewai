@@ -10,8 +10,7 @@ class ChefTask():
             **Parameters**: 
             - user need: {input}"""),
 			expected_output=dedent("""\
-				A detailed report summarizing key findings about each participant
-				and company, highlighting information that could be relevant for the meeting."""),
+				A detailed report summarizing key findings about the given user needs, highlighting information that could be relevant for the user needs is appreciatable."""),
 			# async_execution=True,
 			agent=agent
 		)

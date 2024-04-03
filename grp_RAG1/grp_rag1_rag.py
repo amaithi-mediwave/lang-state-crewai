@@ -283,37 +283,42 @@ def mediwave_rag(state):
     print(input)
     
     import os
-
-
+    import warnings
+    warnings.filterwarnings('ignore')
     from langchain_community.vectorstores import Weaviate
     from langchain_core.output_parsers import StrOutputParser
     from langchain_core.prompts import ChatPromptTemplate
     from langchain_core.pydantic_v1 import BaseModel
     from langchain_core.runnables import RunnableParallel, RunnablePassthrough
     from langchain_community.chat_models import ChatOllama
-    from langchain_core.messages import HumanMessage, AIMessage
+    from langchain_core.agents import AgentFinish
 
     import weaviate
     from langchain.globals import set_llm_cache
     from langchain.cache import RedisCache
     import redis
 
-    REDIS_URL = "redis://localhost:6379/0"
 
+    REDIS_URL = os.environ['REDIS_URL']
+    WEAVIATE_CLIENT_URL = os.environ['WEAVIATE_CLIENT_URL']
+    WEAVIATE_CLASS_NAME = os.environ['WEAVIATE_CLASS_NAME']
+    WEAVIATE_CLASS_PROPERTY = os.environ['WEAVIATE_CLASS_PROPERTY']
+    
+    
     redis_client = redis.Redis.from_url(REDIS_URL)
+    
     set_llm_cache(RedisCache(redis_client))
 
 
-    client = weaviate.Client(
-    url="http://localhost:8080",
+    weaviate_client = weaviate.Client(
+    url= WEAVIATE_CLIENT_URL
     )
 
-    vectorstore = Weaviate(client, 
-                        "GRP", 
-                        "content")
+    vectorstore = Weaviate(weaviate_client, 
+                        WEAVIATE_CLASS_NAME, 
+                        WEAVIATE_CLASS_PROPERTY)
 
     retriever = vectorstore.as_retriever()
-
 
 
     # RAG prompt
@@ -324,18 +329,15 @@ def mediwave_rag(state):
     prompt = ChatPromptTemplate.from_template(template)
 
 
-
-
     # RAG
     model = ChatOllama(model=os.environ['LLM'])
-    # model = ChatOllama(model="falcon:40b-instruct-q4_1")
+
     chain = (
         RunnableParallel({"context": retriever, "question": RunnablePassthrough()})
         | prompt
         | model
-        # | StrOutputParser()
+        | StrOutputParser()
     )
-
 
 
     # Add typing for input
@@ -346,5 +348,7 @@ def mediwave_rag(state):
     chain = chain.with_types(input_type=Question)
 
     result = chain.invoke(input)
-    return {"messages": [result]}
-    # return result
+    
+    # print(result)
+    
+    return {"agent_outcome": AgentFinish(return_values={'output': result}, log=result)}

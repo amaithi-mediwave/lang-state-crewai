@@ -1,15 +1,7 @@
 from crewai import Agent 
 from textwrap import dedent
 from langchain_community.chat_models import ChatOllama 
-from langchain_community.llms.ollama import Ollama
-
-from dotenv import load_dotenv
-load_dotenv()
-
 import os 
-from crewai import Agent
-from textwrap import dedent
-from langchain_openai import ChatOpenAI
 
 from .grp_travel_tools import SearchTools
 from .grp_travel_tools import CalculatorTools

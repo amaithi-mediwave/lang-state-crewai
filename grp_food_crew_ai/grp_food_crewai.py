@@ -1,15 +1,9 @@
 from crewai import Crew
-from textwrap import dedent
-# from agents import TravelAgents
 from crewai.process import Process
-from dotenv import load_dotenv
-load_dotenv()
 import os
-
-from crewai import Task
-from textwrap import dedent
 from langchain_community.llms.ollama import Ollama
 from langchain_experimental.llms.ollama_functions import OllamaFunctions
+from langchain_core.agents import AgentFinish
 
 from .grp_food_agents import ChefAgents
 from .grp_food_task import ChefTask
@@ -22,7 +16,7 @@ def food_crew(input):
     
     LLM = os.getenv('LLM')
     llm = Ollama(model=LLM)
-    function_llm = OllamaFunctions(model=LLM)
+    # function_llm = OllamaFunctions(model=LLM)
 
     chef_agent = agents.chef_agent()
     nutrition_agent = agents.nutrition_agent()
@@ -65,5 +59,6 @@ def food_crew(input):
     )
 
     result = crew.kickoff()
-    print(result)
-    return {"messages": [result]}
+    # print(result)
+    # return {"messages": [result]}
+    return {"agent_outcome": AgentFinish(return_values={'output': result}, log=result)}

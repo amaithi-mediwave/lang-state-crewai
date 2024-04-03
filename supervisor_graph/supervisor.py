@@ -1,22 +1,21 @@
 
 from langchain.output_parsers.openai_functions import JsonOutputFunctionsParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-
 from langchain_experimental.llms.ollama_functions import OllamaFunctions
-import warnings
-warnings.filterwarnings("ignore")
-
-
+import os 
 
 # members = ["Food_crew", "General_conversation", "General_other", "Mediwave_rag", "Travel_crew"]
 
 
-members = ["General_conv", "General_other", "Mediwave_rag", ]
 
+members = ["Food_crew", "General_conv", "General_other", "Mediwave_rag", "Travel_crew"]
 
 def supervisor_node(state):
 
+    from langchain.globals import set_debug, set_verbose
 
+    set_debug=True 
+    set_verbose=True
 
 
     system_prompt = (
@@ -82,19 +81,20 @@ def supervisor_node(state):
     ).partial(options=str(options), members=", ".join(members))
 
     llm = OllamaFunctions(
-        model="openhermes:7b-mistral-v2-q8_0",
+        model= os.environ['LLM'],
         tool_system_prompt_template=DEFAULT_SYSTEM_TEMPLATE
         )
 
+    # print(state)
     
     supervisor_chain = (
-        {"messages": state['messages']}|
+        # {"messages": state['messages'][0]}|
         prompt
         | llm.bind(functions=[function_def], function_call={"name": "route"})
         | JsonOutputFunctionsParser()
-    )
+    ).with_config({"run_name": "Supervisor"})
     
     result = supervisor_chain.invoke(state)
-    print(result)
+    # print(result)
     
     return result

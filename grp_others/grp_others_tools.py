@@ -1,24 +1,14 @@
-import operator
 from datetime import datetime
-from typing import Annotated, TypedDict, Union
-
-from dotenv import load_dotenv
-from langchain import hub
-from langchain.agents import create_react_agent
-from langchain_community.chat_models import ChatOllama
-from langchain_core.agents import AgentAction, AgentFinish
-from langchain_core.messages import BaseMessage
 from langchain_core.tools import tool
-from langgraph.graph import END, StateGraph
-from langgraph.prebuilt import ToolExecutor, ToolInvocation
-
+from langgraph.prebuilt import ToolExecutor
 from langchain_community.utilities import OpenWeatherMapAPIWrapper
-
 from langchain.pydantic_v1 import BaseModel, Field
-from langchain.tools import BaseTool, StructuredTool, tool
+from langchain.tools import StructuredTool, tool
+from langchain_community.tools import WikipediaQueryRun
+from langchain_community.utilities import WikipediaAPIWrapper
+from langchain_core.pydantic_v1 import BaseModel, Field
 import os
 
-load_dotenv()
 
 # ------------------- CURRENT TIME TOOL -------------------
 @tool
@@ -35,7 +25,8 @@ def get_now(format: str = "%Y-%m-%d %H:%M:%S"):
 def get_weather(location):
     """
     Get the current weather for a given location"""
-    weather = OpenWeatherMapAPIWrapper()
+    
+    weather = OpenWeatherMapAPIWrapper(openweathermap_api_key=os.environ['OPENWEATHERMAP_API_KEY'])
     weather_data = weather.run(location)
     return weather_data
 
@@ -48,12 +39,6 @@ weather = StructuredTool.from_function(
 )
 
 # -------------------  WIKIPEDIA TOOL --------------
-
-from langchain_community.tools import WikipediaQueryRun
-from langchain_community.utilities import WikipediaAPIWrapper
-
-
-from langchain_core.pydantic_v1 import BaseModel, Field
 
 
 api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=100)

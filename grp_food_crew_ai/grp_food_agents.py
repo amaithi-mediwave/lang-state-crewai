@@ -1,11 +1,6 @@
 from crewai import Agent 
 from textwrap import dedent
-from langchain_community.chat_models import ChatOllama 
 from langchain_community.llms.ollama import Ollama
-
-from dotenv import load_dotenv
-load_dotenv()
-
 import os 
 
 from .grp_food_tools import chef_filtered_tools, nutrition_tools, ingridient_tools, image_url_tools, grocery_tools, wine_tools, trivia_tools

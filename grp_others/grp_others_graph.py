@@ -1,6 +1,6 @@
 from langgraph.graph import END, StateGraph
 from langchain_core.messages import AIMessage
-
+from langchain_core.agents import AgentFinish
 
 from .grp_others_state import AgentState
 from .grp_others_nodes import run_agent, execute_tools, should_continue
@@ -34,5 +34,6 @@ def grp_other_def(state):
     
     result = res['agent_outcome'].return_values['output']
     
-    return {'messages': [AIMessage(content=result)]}
+    # return {'messages': [AIMessage(content=result)]}
+    return {"agent_outcome": AgentFinish(return_values={'output': result}, log=result)}
     
