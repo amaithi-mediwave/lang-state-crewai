@@ -4,16 +4,20 @@ from plan_and_execute.state import PlanExecute
 from plan_and_execute.planner import planner
 from plan_and_execute.re_plan import replanner 
 from plan_and_execute.re_plan import Response
+from langchain_core.pydantic_v1 import BaseModel
+from langchain_core.runnables import chain
 
 from supervisor_graph.supervisor_graph import supervisor_graph
-from langchain_core.messages import  HumanMessage
+from langchain_core.messages import BaseMessage, AIMessage,  HumanMessage
+from operator import itemgetter
+from typing import List
 
 from dotenv import load_dotenv
 load_dotenv()
 
 
-async def execute_step(state: PlanExecute):
-    task = state["plan"][0]
+async def execute_step(super_state: PlanExecute):
+    task = super_state["plan"][0]
     
     
     # agent_response = await agent_executor.ainvoke({"input": task, "chat_history": []})
@@ -33,21 +37,21 @@ async def execute_step(state: PlanExecute):
     }
 
 
-async def plan_step(state: PlanExecute):
-    plan = await planner.ainvoke({"objective": state["input"]})
+async def plan_step(super_state: PlanExecute):
+    plan = await planner.ainvoke({"objective": super_state["input"]})
     return {"plan": plan.steps}
 
 
-async def replan_step(state: PlanExecute):
-    output = await replanner.ainvoke(state)
+async def replan_step(super_state: PlanExecute):
+    output = await replanner.ainvoke(super_state)
     if isinstance(output, Response):
         return {"response": output.response}
     else:
         return {"plan": output.steps}
 
 
-def should_end(state: PlanExecute):
-    if state["response"]:
+def should_end(super_state: PlanExecute):
+    if super_state["response"]:
         return True
     else:
         return False
@@ -88,7 +92,33 @@ workflow.add_conditional_edges(
     },
 )
 
-# Finally, we compile it!
-app = workflow.compile().with_config({"run_name": "Super Graph"})
 
+# Add typing for input
+class GraphModel(BaseModel):
+    input: str
+
+
+
+
+# Finally, we compile it!
+graph = workflow.compile().with_config({"run_name": "Super Graph"}).with_types(input_type=GraphModel)
+
+# graph = graph.with_types(input_type=GraphModel)
+
+
+
+# @chain
+# async def custom_chain(input):
+    
+#     # input = input.content
+#     print(input)
+    
+#     result = await graph.ainvoke({"input": input})
+    
+#     # print(result)
+    
+#     return AIMessage(content=result['response'])
+
+
+# custom_chain = custom_chain.with_types(input_type=GraphModel)
 

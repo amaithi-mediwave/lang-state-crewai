@@ -33,4 +33,4 @@ replanner = create_openai_fn_runnable(
     [Plan, Response],
     OllamaFunctions(model=os.environ['LLM']),
     replanner_prompt,
-).with_config({"run_name": "Super Graph - Re Planner"})
+)

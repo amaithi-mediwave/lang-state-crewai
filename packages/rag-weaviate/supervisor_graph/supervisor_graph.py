@@ -86,7 +86,7 @@ for member in members:
 # workflow.add_edge(member, "supervisor")
 
 
-supervisor_graph = workflow.compile().with_config({"run_name": "Supervisor Graph"})
+supervisor_graph = workflow.compile()
 
 
 supervisor_graph

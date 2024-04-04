@@ -92,7 +92,7 @@ def supervisor_node(state):
         prompt
         | llm.bind(functions=[function_def], function_call={"name": "route"})
         | JsonOutputFunctionsParser()
-    ).with_config({"run_name": "Supervisor"})
+    )
     
     result = supervisor_chain.invoke(state)
     # print(result)

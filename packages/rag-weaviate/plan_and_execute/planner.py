@@ -28,4 +28,4 @@ planner = create_structured_output_runnable(
     Plan, 
     OllamaFunctions(model=os.environ['LLM']),
     planner_prompt
-).with_config({"run_name": "Super Graph - Planner"})
+)
