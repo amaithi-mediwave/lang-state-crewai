@@ -24,7 +24,7 @@ class AgentState(TypedDict):
     
     agent_outcome: Union[AgentAction, AgentFinish, None, str]
 
-    next: str
+    next: dict
 
 
 

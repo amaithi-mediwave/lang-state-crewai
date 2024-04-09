@@ -15,11 +15,14 @@ from typing import List
 from dotenv import load_dotenv
 load_dotenv()
 
+# from retry import retry
 
+# ---------------------------- STEP EXECUTOR --------------------------------
 async def execute_step(super_state: PlanExecute):
-    task = super_state["plan"][0]
+    task = super_state["plan"][0]['value']
+    worker = super_state['plan'][0]['key']
     
-    
+    print(task)
     # agent_response = await agent_executor.ainvoke({"input": task, "chat_history": []})
     
     agent_response = await supervisor_graph.ainvoke({"messages": [
@@ -27,6 +30,7 @@ async def execute_step(super_state: PlanExecute):
             content=task
         )
     ],
+    "next": worker
         
     })
     
@@ -36,22 +40,42 @@ async def execute_step(super_state: PlanExecute):
         "past_steps": (task, agent_response["agent_outcome"].return_values["output"])
     }
 
-
+# ---------------------------- PLAN STEPS --------------------------------
 async def plan_step(super_state: PlanExecute):
     plan = await planner.ainvoke({"objective": super_state["input"]})
-    return {"plan": plan.steps}
+    # return {"plan": plan.steps}
+    h = plan
+    print(h)
 
+    return plan
+
+
+# ---------------------------- RE - PLAN STEPS --------------------------------
 
 async def replan_step(super_state: PlanExecute):
-    output = await replanner.ainvoke(super_state)
+    super_state_ = super_state.copy()
+    
+    plan_step = []
+    
+    for item in super_state['plan']:
+        plan_step.append(item['value'])
+    
+    super_state_ |= {'plan': plan_step}
+    
+    output =await replanner.ainvoke(super_state_)
+    
+    # print(output.dict()['steps'])
+    
     if isinstance(output, Response):
         return {"response": output.response}
     else:
-        return {"plan": output.steps}
+        return {"plan": output.dict()['steps'], 'response': None}
 
+
+# ---------------------------- SHOULD END --------------------------------
 
 def should_end(super_state: PlanExecute):
-    if super_state["response"]:
+    if super_state["response"] != None:
         return True
     else:
         return False
@@ -59,6 +83,7 @@ def should_end(super_state: PlanExecute):
 
 
 
+# ----------------------------STATE GRAPH --------------------------------
 
 from langgraph.graph import StateGraph, END
 
