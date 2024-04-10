@@ -47,7 +47,13 @@ async def plan_step(super_state: PlanExecute):
     h = plan
     print(h)
 
+
+    # if plan['plan']:
     return plan
+    # else:0
+        # return {'plan': plan}
+
+    # return {'plan': plan}
 
 
 # ---------------------------- RE - PLAN STEPS --------------------------------

@@ -40,4 +40,7 @@ prompt = hub.pull("hwchase17/react")
 #     Thought:{agent_scratchpad}""")
 
 
-agent_runnable = create_react_agent(model, tools, prompt)
+agent_runnable = create_react_agent(model, tools, prompt).with_retry(
+    retry_if_exception_type=(ValueError, KeyError),
+    stop_after_attempt=4
+)

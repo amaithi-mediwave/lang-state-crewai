@@ -128,7 +128,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from plan_and_execute.planner import crews
 from langchain_experimental.llms.ollama_functions import OllamaFunctions
 import os
-
+from langchain_community.chat_models.ollama import ChatOllama
 
 from langchain.globals import set_debug, set_verbose
 
@@ -197,15 +197,28 @@ You have currently done the follow steps:
 Update your plan accordingly(remove the completed step). If no more steps are needed and you can return to the user, then respond with that. Otherwise, fill out the plan. Only add steps to the plan that still NEED to be done. Do not return previously done steps as part of the plan.
 
 only provide the final answer after make sure the user requirement has been satisfied completely.
+
+make sure the tool name is either 'Plan' or 'Response'
+
+while providing response make sure the user input is satisfied with the response refer the follow steps to gather the necessary informations for the final response.
 """
 )
+
+llm = ChatOllama(model=os.environ['LLM'], stop= [
+       "[INST]",
+        "[/INST]"
+    ]
+                 )
 
 
 replanner = create_openai_fn_runnable(
     
     [Plan, Response],
-    OllamaFunctions(model=os.environ['LLM']),
+    OllamaFunctions(llm=llm),
     replanner_prompt,
+).with_retry(
+  retry_if_exception_type=(ValueError,KeyError),
+  stop_after_attempt=4,
 )
 
 
