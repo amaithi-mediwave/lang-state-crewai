@@ -88,7 +88,7 @@ This plan should involve individual tasks, that if executed correctly will yield
     
     if the user asks anything related to food, receipies, and it's related stuffs use 'Food_crew' key,
         if the user asks anything related to mediwave and it's related stuffs use 'Mediwave_rag' key,    
-        if the user makes conversation, jokes and funny conversations then use 'General_conv' key,
+        if the user makes conversation like hi, hello and something like that, jokes and funny conversations then use 'General_conv' key,
         if the user asks anything related to weather, time, wikipedia and it's related stuffs use 'General_other' key,
         if the user asks anything related to travel, exploration, city tour and it's related stuffs use 'Travel_crew' key.
     
@@ -102,8 +102,8 @@ user input : {objective}"""
 )
 
 llm = ChatOllama(model=os.environ['LLM'], stop= [
-        "[INST]",
-        "[/INST]"
+        os.environ['LLM_START_PARAM'],
+        os.environ['LLM_STOP_PARAM']
     ]
                  )
 

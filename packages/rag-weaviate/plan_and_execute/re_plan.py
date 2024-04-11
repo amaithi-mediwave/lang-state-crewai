@@ -205,8 +205,8 @@ while providing response make sure the user input is satisfied with the response
 )
 
 llm = ChatOllama(model=os.environ['LLM'], stop= [
-       "[INST]",
-        "[/INST]"
+        os.environ['LLM_START_PARAM'],
+        os.environ['LLM_STOP_PARAM']
     ]
                  )
 
