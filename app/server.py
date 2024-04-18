@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from langserve import add_routes
-from plan_and_execute.graph import graph as rag_weaviate_chain
+from plan_and_execute.graph import graph1 as rag_weaviate_chain
 
 
 # graph = graph.graph

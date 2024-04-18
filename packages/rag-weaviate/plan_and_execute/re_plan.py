@@ -171,19 +171,44 @@ function1 = {'name': 'plan',
 }
 
 
+# prmpt =  """For the given user input, come up with a simple step by step plan. \
+# This plan should involve individual tasks, that if executed correctly will yield the correct answer. Do not add any superfluous steps. \
+    
+#       if the user asks anything related to food, receipies, and it's related stuffs use 'Food_crew' key,
+#         if the user asks anything related to mediwave and it's related stuffs use 'Mediwave_rag' key,    
+#         if the user makes conversation, jokes and funny conversations then use 'General_conv' key,
+#         if the user asks anything related to weather, time, wikipedia and it's related stuffs use 'General_other' key,
+#         if the user asks anything related to travel, exploration, city tour and it's related stuffs use 'Travel_crew' key.
+    
+    
+# The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps.
+
+# user input was this:
+# {input}
+
+# Your original plan was this:
+# {plan}
+
+# You have currently done the follow steps:
+# {past_steps}
+
+# Update your plan accordingly(remove the completed step). If no more steps are needed and you can return to the user, then respond with that. Otherwise, fill out the plan. Only add steps to the plan that still NEED to be done. Do not return previously done steps as part of the plan.
+
+# only provide the final answer after make sure the user requirement has been satisfied completely.
+
+# don't use ```json``` while giving the response
+
+# make sure the tool name is either 'Plan' or 'Response'
+
+# don't make unneccesary steps unrelavant to the original user input.. remove the satisfied step in the given plan. 
+
+# while providing response make sure the user input is satisfied with the response refer the follow steps to gather the necessary informations for the final response.
+# """
+
 
 replanner_prompt = ChatPromptTemplate.from_template(
-    """For the given user input, come up with a simple step by step plan. \
-This plan should involve individual tasks, that if executed correctly will yield the correct answer. Do not add any superfluous steps. \
-    
-      if the user asks anything related to food, receipies, and it's related stuffs use 'Food_crew' key,
-        if the user asks anything related to mediwave and it's related stuffs use 'Mediwave_rag' key,    
-        if the user makes conversation, jokes and funny conversations then use 'General_conv' key,
-        if the user asks anything related to weather, time, wikipedia and it's related stuffs use 'General_other' key,
-        if the user asks anything related to travel, exploration, city tour and it's related stuffs use 'Travel_crew' key.
-    
-    
-The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps.
+   """
+you are a planning expert following are the user input, and the plan as well as the performed steps and it's outcomes you're job is to analyse the currently executed steps and its outcome to summarize the final answer to the user question, while providing response make sure the user input is satisfied with the response refer the follow steps to gather the necessary informations for the final response..
 
 user input was this:
 {input}
@@ -194,13 +219,20 @@ Your original plan was this:
 You have currently done the follow steps:
 {past_steps}
 
+\n incase you need more information/ execute all steps in the plan to summarize the final answer then do the following.
+
 Update your plan accordingly(remove the completed step). If no more steps are needed and you can return to the user, then respond with that. Otherwise, fill out the plan. Only add steps to the plan that still NEED to be done. Do not return previously done steps as part of the plan.
 
 only provide the final answer after make sure the user requirement has been satisfied completely.
 
-make sure the tool name is either 'Plan' or 'Response'
+don't use ```json``` while giving the response
 
-while providing response make sure the user input is satisfied with the response refer the follow steps to gather the necessary informations for the final response.
+make sure the tool name is either 'Plan' for replan or 'Response' for final answer.
+
+don't make unneccesary steps unrelavant to the original user input.. remove the satisfied step in the given plan. 
+
+don't add any notes to the output.
+
 """
 )
 

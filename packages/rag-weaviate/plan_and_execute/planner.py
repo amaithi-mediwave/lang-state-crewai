@@ -92,11 +92,15 @@ This plan should involve individual tasks, that if executed correctly will yield
         if the user asks anything related to weather, time, wikipedia and it's related stuffs use 'General_other' key,
         if the user asks anything related to travel, exploration, city tour and it's related stuffs use 'Travel_crew' key.
     
+    always plan minimal steps. make multiple steps only if it is necessary. don't make unnecessary steps, make sure the steps satisfy the original user input.
     
 The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps.
 
 make sure the tool name is always 'output_formatter'
 
+only add the actionable step not the empty steps..
+
+don't use ```json``` while giving the response
 
 user input : {objective}"""
 )
@@ -118,4 +122,5 @@ planner = create_structured_output_runnable(
 #   retry_if_exception_type = (ValueError, KeyError),
 #   stop_after_attempt = 4
 # )
+
 

@@ -7,9 +7,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_community.chat_models import ChatOllama
-
+import os 
 import weaviate
-from langchain.globals import set_llm_cache
+# from langchain.globals import set_llm_cache
 from langchain.cache import RedisCache
 # import redis
 
@@ -42,8 +42,7 @@ prompt = ChatPromptTemplate.from_template(template)
 
 
 # RAG
-model = ChatOllama(model="mistral:7b-instruct-v0.2-q8_0")
-# model = ChatOllama(model="falcon:40b-instruct-q4_1")
+model = ChatOllama(model=os.environ['LLM'])
 chain = (
     RunnableParallel({"context": retriever, "question": RunnablePassthrough()})
     | prompt

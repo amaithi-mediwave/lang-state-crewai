@@ -132,24 +132,26 @@ class GraphModel(BaseModel):
 
 
 # Finally, we compile it!
-graph = workflow.compile().with_config({"run_name": "Super Graph"}).with_types(input_type=GraphModel)
+graph = workflow.compile().with_config({"run_name": "Super Graph"})
+
+# .with_types(input_type=GraphModel)
 
 # graph = graph.with_types(input_type=GraphModel)
 
 
 
-# @chain
-# async def custom_chain(input):
+@chain
+async def custom_chain(input):
     
-#     # input = input.content
-#     print(input)
+    # input = input.content
+    # print(input)
     
-#     result = await graph.ainvoke({"input": input})
+    result = await graph.ainvoke({"input": input})
     
-#     # print(result)
-    
-#     return AIMessage(content=result['response'])
+    # print(result)
+    g = {'output' : result['response']}
+    return {'output' : result['response']}
 
 
-# custom_chain = custom_chain.with_types(input_type=GraphModel)
+graph1 = custom_chain.with_types(input_type=GraphModel)
 
