@@ -1,8 +1,7 @@
 from crewai import Crew
 from crewai.process import Process
 import os
-from langchain_community.llms.ollama import Ollama
-from langchain_experimental.llms.ollama_functions import OllamaFunctions
+from langchain_groq.chat_models import ChatGroq
 from langchain_core.agents import AgentFinish
 
 from .grp_food_agents import ChefAgents
@@ -15,8 +14,10 @@ def food_crew(input):
     tasks = ChefTask()
     
     LLM = os.getenv('LLM')
-    llm = Ollama(model=LLM)
-    # function_llm = OllamaFunctions(model=LLM)
+    llm = ChatGroq(
+                model=os.environ['LLM'],
+                api_key=os.environ['GROQ_API_KEY']
+                )
 
     chef_agent = agents.chef_agent()
     nutrition_agent = agents.nutrition_agent()
@@ -46,12 +47,8 @@ def food_crew(input):
                 ],
         tasks=[
                 task1
-            # tasks.crew_task(input='how to make chicken biryani'),
             
-            # tasks.ingriedient_finder
         ],
-        # function_calling_llm=function_llm,
-        # full_output=True,
         verbose=1,
         process=Process.hierarchical,
         # manager_callbacks=manager_agent,
@@ -59,6 +56,5 @@ def food_crew(input):
     )
 
     result = crew.kickoff()
-    # print(result)
-    # return {"messages": [result]}
+
     return {"agent_outcome": AgentFinish(return_values={'output': result}, log=result)}

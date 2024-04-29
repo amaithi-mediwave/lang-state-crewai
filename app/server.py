@@ -14,7 +14,7 @@ async def redirect_root_to_docs():
 
 
 # Edit this to add the chain you want to add
-add_routes(app, rag_weaviate_chain, path="/rag-weaviate", playground_type='default', enable_feedback_endpoint=True,)
+add_routes(app, rag_weaviate_chain, path="/autonomous-agent", playground_type='default', enable_feedback_endpoint=True,)
 
 if __name__ == "__main__":
     import uvicorn

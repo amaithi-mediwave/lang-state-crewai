@@ -1,7 +1,7 @@
 from crewai import Crew
 from textwrap import dedent
 from crewai.process import Process
-from langchain_community.chat_models.ollama import ChatOllama
+from langchain_groq.chat_models import ChatGroq
 from langchain_core.agents import AgentFinish
 import os
 
@@ -18,7 +18,10 @@ def travel_crew(state):
     travel_agents = TravelAgents()
     travel_tasks = TravelTask()
     
-    llm = ChatOllama(model=os.environ['LLM'])
+    llm = ChatGroq(
+                model=os.environ['LLM'],
+                api_key=os.environ['GROQ_API_KEY']
+                )
     
     expert_travel_agent = travel_agents.expert_travel_agent()
     city_selection_agent = travel_agents.city_selection_expert()

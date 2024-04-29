@@ -8,21 +8,17 @@ from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.runnables import chain
 
 from supervisor_graph.supervisor_graph import supervisor_graph
-from langchain_core.messages import BaseMessage, AIMessage,  HumanMessage
-from operator import itemgetter
-from typing import List
+from langchain_core.messages import BaseMessage, AIMessage, HumanMessage
 
 from dotenv import load_dotenv
 load_dotenv()
 
-# from retry import retry
 
 # ---------------------------- STEP EXECUTOR --------------------------------
 async def execute_step(super_state: PlanExecute):
     task = super_state["plan"][0]['value']
     worker = super_state['plan'][0]['key']
     
-    print(task)
     # agent_response = await agent_executor.ainvoke({"input": task, "chat_history": []})
     
     agent_response = await supervisor_graph.ainvoke({"messages": [
@@ -34,27 +30,18 @@ async def execute_step(super_state: PlanExecute):
         
     })
     
-    print(agent_response)
-    
     return {
         "past_steps": (task, agent_response["agent_outcome"].return_values["output"])
     }
 
 # ---------------------------- PLAN STEPS --------------------------------
+
 async def plan_step(super_state: PlanExecute):
+ 
     plan = await planner.ainvoke({"objective": super_state["input"]})
-    # return {"plan": plan.steps}
-    h = plan
-    print(h)
-
-
-    # if plan['plan']:
-    return plan
-    # else:0
-        # return {'plan': plan}
-
-    # return {'plan': plan}
-
+ 
+    return {'plan' : plan.dict()['steps']}
+ 
 
 # ---------------------------- RE - PLAN STEPS --------------------------------
 
@@ -131,26 +118,19 @@ class GraphModel(BaseModel):
 
 
 
-# Finally, we compile it!
+# Graph compile 
 graph = workflow.compile().with_config({"run_name": "Super Graph"})
-
-# .with_types(input_type=GraphModel)
-
-# graph = graph.with_types(input_type=GraphModel)
 
 
 
 @chain
 async def custom_chain(input):
     
-    # input = input.content
-    # print(input)
+
     
     result = await graph.ainvoke({"input": input})
-    
-    # print(result)
-    g = {'output' : result['response']}
-    return {'output' : result['response']}
+
+    return result['response']
 
 
 graph1 = custom_chain.with_types(input_type=GraphModel)

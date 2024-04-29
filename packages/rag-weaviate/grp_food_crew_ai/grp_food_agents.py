@@ -1,13 +1,16 @@
 from crewai import Agent 
 from textwrap import dedent
-from langchain_community.llms.ollama import Ollama
+from langchain_groq.chat_models import ChatGroq
 import os 
 
 from .grp_food_tools import chef_filtered_tools, nutrition_tools, ingridient_tools, image_url_tools, grocery_tools, wine_tools, trivia_tools
 
 class ChefAgents:
     def __init__(self):
-        self.llm = Ollama(model=os.getenv('LLM'))      
+        self.llm = ChatGroq(
+                            model=os.environ['LLM'],
+                            api_key=os.environ['GROQ_API_KEY']
+                            )     
 
     def chef_agent(self):
         return Agent(

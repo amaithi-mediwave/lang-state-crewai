@@ -3,21 +3,18 @@ from langchain.output_parsers.openai_functions import JsonOutputFunctionsParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_experimental.llms.ollama_functions import OllamaFunctions
 import os 
+from langchain.globals import set_debug, set_verbose
 
-# members = ["Food_crew", "General_conversation", "General_other", "Mediwave_rag", "Travel_crew"]
-
+set_debug=True 
+set_verbose=True
 
 
 members = ["Food_crew", "General_conv", "General_other", "Mediwave_rag", "Travel_crew"]
 
 def supervisor_node(state):
 
-    from langchain.globals import set_debug, set_verbose
 
-    set_debug=True 
-    set_verbose=True
     
-    print(state)
     # result = {'next': state['plan'][0]['key']}
 
     return state

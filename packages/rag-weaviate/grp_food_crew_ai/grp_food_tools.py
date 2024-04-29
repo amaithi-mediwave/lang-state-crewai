@@ -1,10 +1,13 @@
 from langchain.requests import Requests
 from langchain_community.agent_toolkits import NLAToolkit
 import os
-from langchain_community.llms import Ollama
+from langchain_groq.chat_models import ChatGroq
 
 
-llm = Ollama(model=os.environ['LLM'])
+llm = ChatGroq(
+                model=os.environ['LLM'],
+                api_key=os.environ['GROQ_API_KEY']
+                )
 
 # ------------------------- SPOONACULAR OPEN API SPEC -------------------
 requests = Requests(headers={"x-api-key": os.environ['SPOONACULAR_API_KEY']})

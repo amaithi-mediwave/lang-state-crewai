@@ -1,6 +1,6 @@
 from crewai import Agent 
 from textwrap import dedent
-from langchain_community.chat_models import ChatOllama 
+from langchain_groq.chat_models import ChatGroq
 import os 
 
 from .grp_travel_tools import SearchTools
@@ -35,9 +35,14 @@ Notes:
 
 
 class TravelAgents:
+    
     def __init__(self):
-       self.llm = ChatOllama(model= os.environ['LLM'])
+       self.llm = ChatGroq(
+                        model=os.environ['LLM'],
+                        api_key=os.environ['GROQ_API_KEY']
+                        )
 
+    # ---------------------------------- TRAVEL AGENT -----------------------------------
     def expert_travel_agent(self):
         return Agent(
             role="Expert Travel Agent",
@@ -56,6 +61,7 @@ class TravelAgents:
             llm=self.llm,
         )
 
+     # ---------------------------------- CITY SELECTION AGENT -----------------------------------
     def city_selection_expert(self):
         return Agent(
             role="City Selection Expert",
@@ -68,6 +74,7 @@ class TravelAgents:
             llm=self.llm,
         )
 
+     # ---------------------------------- LOCAL TOUR GUIDE AGENT -----------------------------------
     def local_tour_guide(self):
         return Agent(
             role="Local Tour Guide",
@@ -80,12 +87,13 @@ class TravelAgents:
             llm=self.llm,
         )
     
+     # ---------------------------------- TRAVEL MANAGER - AGENT -----------------------------------
     def travel_manager(self):
         return Agent(
             role="Travel agency manager",
             backstory=dedent(f"""Knowledgeable travel agency manager, orchestrating the tasks to the fellow crew members to obtain the tailored travel solutions to the user. """),
             goal=dedent(
-                f"""orchestrate the tasks to the crew members and supervise them, find the need of the user"""),
+                f"""orchestrate the tasks to the crew members and supervise them, find the need of the user. only make task that are absolutely needed."""),
             verbose=True,
             llm=self.llm,
         )

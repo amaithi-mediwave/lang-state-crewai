@@ -2,7 +2,7 @@ import operator
 from typing import Annotated, TypedDict, Union
 from langchain import hub
 from langchain.agents import create_react_agent
-from langchain_community.chat_models import ChatOllama
+from langchain_groq.chat_models import ChatGroq
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain_core.messages import BaseMessage
 
@@ -17,7 +17,10 @@ class AgentState(TypedDict):
     intermediate_steps: Annotated[list[tuple[AgentAction, str]], operator.add]
 
 
-model = ChatOllama(model=os.getenv('LLM'))
+model = ChatGroq(
+            model=os.environ['LLM'],
+            api_key=os.environ['GROQ_API_KEY']
+            )
 
 prompt = hub.pull("hwchase17/react")
 

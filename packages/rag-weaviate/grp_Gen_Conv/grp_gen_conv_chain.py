@@ -15,12 +15,12 @@ def general_conversation(state):
     from langchain_core.prompts import ChatPromptTemplate
     from langchain_core.pydantic_v1 import BaseModel
     from langchain_core.runnables import RunnablePassthrough
-    from langchain_community.chat_models import ChatOllama
     from langchain.globals import set_llm_cache
     from langchain.cache import RedisCache
     import redis
     from langchain_core.agents import AgentFinish
 
+    from langchain_groq.chat_models import ChatGroq
 
     redis_client = redis.Redis.from_url(os.environ['REDIS_URL'])
     
@@ -35,7 +35,11 @@ def general_conversation(state):
 
 
     # RAG
-    model = ChatOllama(model=os.environ['LLM'])
+    # model = ChatOllama(model=os.environ['LLM'])
+    model = ChatGroq(
+        model=os.environ['LLM'],
+        api_key=os.environ['GROQ_API_KEY']
+        )
 
     chain = (
 

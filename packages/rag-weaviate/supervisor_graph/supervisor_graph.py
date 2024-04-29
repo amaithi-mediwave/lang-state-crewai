@@ -40,20 +40,6 @@ workflow.add_node("Travel_crew", travel_crew)
 workflow.add_node("supervisor", supervisor_node)
 
 
-
-
-# for member in members:
-    
-#     if member == 'Mediwave_rag':
-#         continue
-#     if member == 'Travel_crew':
-#         continue
-    
-
-# # We want our workers to ALWAYS "report back" to the supervisor when done
-# workflow.add_edge(member, "supervisor")
-
-
 # The supervisor populates the "next" field in the graph state
 # which routes to a node or finishes
 
@@ -76,16 +62,7 @@ workflow.set_entry_point("supervisor")
 for member in members:
     
     workflow.set_finish_point(member)
-    # if member == 'Mediwave_rag':
-    #     continue
-    # if member == 'Travel_crew':
-    #     continue
     
-
-# We want our workers to ALWAYS "report back" to the supervisor when done
-# workflow.add_edge(member, "supervisor")
-
-
 supervisor_graph = workflow.compile()
 
 
